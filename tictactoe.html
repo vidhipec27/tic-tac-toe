@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .button-container {
+        margin-left: 35%;
+        position: relative;
+      }
+          
+      .player-key {
+        display: inline-grid;
+        grid-template-columns: 100px;
+        grid-template-rows: 70px 70px;
+        position: absolute;
+        top: 30%;
+        left: -100px;
+      }
+      
+      .game {
+        display: inline-grid;
+        grid-template-columns: 100px 100px 100px;
+        grid-template-rows: 100px 100px 100px;
+      }
+            
+      .clear-game-button {
+        position: absolute;
+        top: 40%;
+        margin-left: 20px;
+      }
+      
+      .reset-score-button {
+        position: absolute;
+        top: 60%;
+        margin-left: 20px;
+      }
+
+      .result {
+        position: relative;
+      }
+
+      .result-shown {
+        position: absolute;
+        top: 20px
+      }
+
+      .score {
+        position: absolute;
+        top: 50px;
+      }
+    </style>
+
+    <title>
+      Tic Tac Toe!
+    </title>
+  </head>
+  <body>
+    <p> Tic Tac Toe</p>
+  <div class="button-container">
+    <div class="player-key">
+      <div> Player 1: X <button onclick="computerize(1);"> Computerize </button> </div>
+      <div> Player 2: O <button onclick="computerize(2);"> Computerize </button></div>
+    </div>
+    <div class="game">
+      <button class="js-button-1 button" onclick="
+      playerMove(1)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-2 button" onclick="
+      playerMove(2)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-3 button" onclick="
+      playerMove(3)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-4 button" onclick="
+      playerMove(4)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-5 button" onclick="      
+      playerMove(5)
+      displayResult(checkResult());
+     "></button>
+      <button class="js-button-6 button" onclick="
+      playerMove(6)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-7 button" onclick="
+      playerMove(7)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-8 button" onclick="
+      playerMove(8)
+      displayResult(checkResult());
+      "></button>
+      <button class="js-button-9 button" onclick="
+      playerMove(9)
+      displayResult(checkResult());     
+      "></button>
+    </div>
+      <button onclick="clearGame()" class="clear-game-button"> Reset Game </button>
+      <button onclick="resetScore()" class="reset-score-button"> Reset Score</button>
+  </div>
+    <div class="result">
+      <p class="js-result-shown result-shown">
+        
+      </p>
+      <p class="js-score score"></p>
+    </div>
+    
+    <script>
+      let counter = 1;
+      let display = document.querySelector(".js-result-shown");
+      let column = [];
+      let row = [];
+      let flag = 0;
+      //let computerInterval = 0;
+      //let flagComputer = 0;
+      let score = JSON.parse(localStorage.getItem('score')) || { 
+        player1: 0,
+        player2: 0,
+      };
+
+      if (JSON.parse(localStorage.getItem('score'))) {
+        updateScore('Page reloaded');
+      }
+
+      function computerize(playerNumber) {
+        
+        const computerInterval = setInterval(function() { if (counter < 10 && !flag) {
+          computerMove(playerNumber); } 
+          else if (counter == 10 || flag) {
+           clearInterval(computerInterval);
+          }
+      }, 1000) 
+        
+    }
+    
+      function playerMove (number) {
+      if (!flag) {
+       // console.log('hi');
+        drawMove = document.querySelector(`.js-button-${number}`);
+          if  (counter <10 && drawMove.innerHTML == '' ) {
+            if (counter % 2 == 1) {
+              drawMove.innerHTML = 'X';
+            }
+            else {
+              drawMove.innerHTML = 'O';            
+            }
+            counter++;
+          }
+        }
+        //console.log(counter);
+      }
+      
+      function computerMove (playerNumber) {
+        console.log('inside computerMove');
+        if (!flag) {
+        buttonNumber = computerChoose();
+       breakIf: if (playerNumber == 1) {
+          if (counter % 2 == 1) {
+            buttonNumber.innerHTML = 'X';
+            counter++;
+          }
+          else {
+            break breakIf;
+          }
+        }
+        else if (playerNumber == 2) {
+          if (counter % 2 == 0) {
+            buttonNumber.innerHTML = 'O';
+            counter++;
+          }
+          else {
+            break breakIf;
+          }
+        }
+        displayResult(checkResult());
+      }
+    }
+      function computerChoose () {
+        flagInternal = 0;
+        while (!flagInternal) {
+          number = Math.random();
+          console.log(number);
+          for (let i = 0; i<=1; i += 1/9) {
+            buttonNumber = document.querySelector(`.js-button-${Math.floor(9*i+1)}`);
+            if ((number >= i && number <= i+1/9) && !buttonNumber.innerHTML) {
+              flagInternal = 1;
+              return buttonNumber;
+            }
+          }
+        }
+      }
+
+      function clearGame() {
+        for (let i = 1; i<10; i++) {
+          buttonText = document.querySelector(`.js-button-${i}`);
+          buttonText.innerHTML ='';
+        }
+        counter = 1;
+        display.innerHTML = '';
+        row = [];
+        column = [];
+        flag = 0;
+        
+      }
+      
+      function resetScore () {
+        localStorage.removeItem('score');
+        score = {
+          player1 : 0,
+          player2 : 0
+        };
+        updateScore();
+      }
+
+      function checkResult () {
+        if (flag != 2) {
+          if (counter >5) {
+            for (let i = 1; i<=3; i++) {
+              for (let j = 0; j<=2; j++) {
+                row[j] = document.querySelector(`.js-button-${i+3*j}`);
+              }
+                result = checkEqual(row[0], row[1], row[2]);
+                if (result) {
+                  return result;
+                } 
+              }
+            }
+            if (counter >5) {
+              for (let i = 1; i<=7; i = i+3) {
+                for (let j = 0; j<=2; j++) {
+                  column[j] = document.querySelector(`.js-button-${i+j}`);
+                }
+            result = checkEqual (column[0], column[1], column[2]);
+            if (result) {
+              return result;
+            }
+          }
+        }
+          if (counter >5) {
+            let oddElements = [];
+            for (let i = 0; i<5; i++ ) {
+           oddElements[i] = document.querySelector(`.js-button-${2*i+1}`);
+          }
+          result1 = checkEqual(oddElements[0], oddElements[2], oddElements[4]);
+          if (result1) {
+            return result1;
+          }
+          result2 = checkEqual(oddElements[1], oddElements[2], oddElements[3]);
+          if (result2) {
+            return result2;
+          }
+        }
+        
+        if (counter == 10 && !flag) {
+          display.innerHTML = 'Tie!';
+          setTimeout(clearGame, 3500);
+        }
+      }
+    }       
+    
+    function displayResult (result) {
+      if(result) {
+        display.innerHTML = result;
+      }
+    }
+    
+    function checkEqual (element1, element2, element3) {
+      let result = '';
+      if (element1.innerHTML == element2.innerHTML && element2.innerHTML == element3.innerHTML) {
+            if (element1.innerHTML == 'X') {
+              result = 'Player 1 won';
+              flag = 1;
+            }
+            else if (element1.innerHTML == 'O') {
+              result = 'Player 2 won';
+              flag = 1;
+            }
+            updateScore(result);
+            localStorage.setItem('score', JSON.stringify(score));
+            return result;
+          }
+        }
+        
+        function updateScore (result) {
+      if (flag != 2) {
+        if (result == 'Player 1 won') {
+          score.player1++;
+          flag = 2;
+        }
+        else if (result == 'Player 2 won') {
+          score.player2++;
+          flag = 2;
+        }
+        scoreDisplay = document.querySelector(".js-score");
+        if (score.player1 || score.player2) {
+          scoreDisplay.innerHTML = `Score: 
+          Player 1: ${score.player1} | Player 2: ${score.player2}`;
+        }
+        else {
+          scoreDisplay.innerHTML = '';
+        }
+      }
+    }
+    </script>
+  </body>
+  </html>
