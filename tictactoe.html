@@ -2,6 +2,16 @@
 <html>
   <head>
     <style>
+      body {
+        font-family: Arial; 
+        background-color: black;
+        color: white;     
+      }
+
+      button {
+        border: none;
+      }
+
       .button-container {
         margin-left: 35%;
         position: relative;
@@ -12,8 +22,11 @@
         grid-template-columns: 100px;
         grid-template-rows: 70px 70px;
         position: absolute;
-        top: 30%;
-        left: -100px;
+        top: 35%;
+        left: -150px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
       }
       
       .game {
@@ -34,77 +47,147 @@
         margin-left: 20px;
       }
 
-      .result {
+      .right-side-button,
+      .computerize-button {
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 10px;
+        padding: 5px 10px;
+        font-weight: bold;
+        transition: opacity 0.15s;
+      }
+      
+      .right-side-button {
+        background-color: rgb(8, 196, 8);
+      }
+      
+      .computerize-button {
+        background-color: rgb(35, 136, 170);
+      }
+
+      .right-side-button:hover,
+      .computerize-button:hover {
+        opacity: 0.7;
+      }
+
+      .right-side-button:active {
+        background-color: rgb(150, 248, 187);
+      }
+
+      .computerize-button:active {
+        background-color: lightblue;
+      }
+
+      .tictactoe-heading {
+        text-align: center;
+        font-size: 24px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .result-div {
         position: relative;
+        width: 100%;
+        height: 80px;
+        z-index: 100;
+        
+      }
+
+      .result-shown,
+      .score {
+        margin: auto;
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+        height: 25px;
+        position: absolute;
       }
 
       .result-shown {
-        position: absolute;
-        top: 20px
+        top: 20px;
       }
 
       .score {
-        position: absolute;
-        top: 50px;
+        top: 40px;
       }
-    </style>
 
+      .grid-button1,
+      .grid-button2,
+      .grid-button4,
+      .grid-button5,
+      .grid-button7,
+      .grid-button8 {
+        font-size: 20px;
+        border-right: 3px solid;
+        border-bottom: 3px solid;
+        cursor: pointer;
+       
+      }
+
+      .grid-button3,
+      .grid-button6,
+      .grid-button9 {
+        font-size: 20px;
+        border-bottom: 3px solid;
+        cursor: pointer;
+      }  
+
+    </style>
     <title>
       Tic Tac Toe!
     </title>
   </head>
   <body>
-    <p> Tic Tac Toe</p>
+    <p class="tictactoe-heading"> TIC TAC TOE</p>
   <div class="button-container">
     <div class="player-key">
-      <div> Player 1: X <button onclick="computerize(1);"> Computerize </button> </div>
-      <div> Player 2: O <button onclick="computerize(2);"> Computerize </button></div>
+      <div> Player 1: X <button onclick="computerize(1);" class="computerize-button"> Computerize </button> </div>
+      <div> Player 2: O <button onclick="computerize(2);" class="computerize-button"> Computerize </button></div>
     </div>
     <div class="game">
-      <button class="js-button-1 button" onclick="
+      <button class="js-button-1 grid-button1" onclick="
       playerMove(1)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-2 button" onclick="
+      <button class="js-button-2 grid-button2" onclick="
       playerMove(2)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-3 button" onclick="
+      <button class="js-button-3 grid-button3" onclick="
       playerMove(3)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-4 button" onclick="
+      <button class="js-button-4 grid-button4" onclick="
       playerMove(4)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-5 button" onclick="      
+      <button class="js-button-5 grid-button5" onclick="      
       playerMove(5)
       displayResult(checkResult());
      "></button>
-      <button class="js-button-6 button" onclick="
+      <button class="js-button-6 grid-button6" onclick="
       playerMove(6)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-7 button" onclick="
+      <button class="js-button-7 grid-button7" onclick="
       playerMove(7)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-8 button" onclick="
+      <button class="js-button-8 grid-button8" onclick="
       playerMove(8)
       displayResult(checkResult());
       "></button>
-      <button class="js-button-9 button" onclick="
+      <button class="js-button-9 grid-button9" onclick="
       playerMove(9)
       displayResult(checkResult());     
       "></button>
     </div>
-      <button onclick="clearGame()" class="clear-game-button"> Reset Game </button>
-      <button onclick="resetScore()" class="reset-score-button"> Reset Score</button>
-  </div>
-    <div class="result">
-      <p class="js-result-shown result-shown">
-        
-      </p>
+      <button onclick="clearGame()" class="clear-game-button right-side-button"> Reset Game </button>
+      <button onclick="resetScore()" class="reset-score-button right-side-button"> Reset Score</button>
+    </div>
+    <div class="result-div">
+      <p class="js-result-shown result-shown"></p>
       <p class="js-score score"></p>
     </div>
     
@@ -207,12 +290,11 @@
       }
       
       function resetScore () {
+      console.log('jipppeee');
         localStorage.removeItem('score');
-        score = {
-          player1 : 0,
-          player2 : 0
-        };
-        updateScore();
+        score.player1 = 0;
+        score.player2 = 0;
+        updateScore('reset');
       }
 
       function checkResult () {
@@ -285,24 +367,24 @@
         }
         
         function updateScore (result) {
-      if (flag != 2) {
-        if (result == 'Player 1 won') {
-          score.player1++;
-          flag = 2;
-        }
-        else if (result == 'Player 2 won') {
-          score.player2++;
-          flag = 2;
-        }
-        scoreDisplay = document.querySelector(".js-score");
-        if (score.player1 || score.player2) {
-          scoreDisplay.innerHTML = `Score: 
-          Player 1: ${score.player1} | Player 2: ${score.player2}`;
-        }
-        else {
-          scoreDisplay.innerHTML = '';
-        }
-      }
+            if (flag != 2) {
+              if (result == 'Player 1 won') {
+                score.player1++;
+                flag = 2;
+              }
+              else if (result == 'Player 2 won') {
+                score.player2++;
+                flag = 2;
+              }
+            }
+              scoreDisplay = document.querySelector(".js-score");
+              if (score.player1 || score.player2) {
+                scoreDisplay.innerHTML = `Score: 
+                Player 1: ${score.player1} | Player 2: ${score.player2}`;
+              }
+              else if (result == 'reset' ) {
+                scoreDisplay.innerHTML = '';
+              }
     }
     </script>
   </body>
